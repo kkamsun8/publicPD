@@ -1,14 +1,36 @@
 import { Bar } from 'react-chartjs-2';
 
-const Chart = ({ a, b, c }) => {
-    const now = new Date()
-    const labels = [...Array(60)].map((v, i) => new Date(now.setMinutes(now.getMinutes() + 1)).toTimeString().substring(0, 5))
-    console.log(labels);
+const Chart = ({ a, b, c, count }) => {
+    let labels;
+    if (count.length !== 0) {
+        console.log(count[0].datetime.toDate());
+        let now = new Date(count[0].datetime.toDate());
+        now = new Date(now.setMinutes(now.getMinutes() + 1));
+        labels = [...Array(60)].map((v, i) => new Date(now.setMinutes(now.getMinutes() - 1)).toTimeString().substring(0, 5)).reverse();
+    } else {
+        labels = [];
+    }
 
-    const data1 = a || [...Array(60)].map(() => Math.floor(Math.random() * 10));
-    const data2 = b || [...Array(60)].map(() => Math.floor(Math.random() * 10));
-    const data3 = c || [...Array(60)].map(() => Math.floor(Math.random() * 10));
 
+    // const data1 = a || [...Array(60)].map(() => Math.floor(Math.random() * 10));
+    // const data2 = b || [...Array(60)].map(() => Math.floor(Math.random() * 10));
+    // const data3 = c || [...Array(60)].map(() => Math.floor(Math.random() * 10));
+    // const data1 = [{ x: '16:53', y: 10 }]
+
+    const data1 = count.map((v) => ({
+        x: v.datetime.toDate().toTimeString().substring(0, 5),
+        y: v.A
+    }))
+
+    const data2 = count.map((v) => ({
+        x: v.datetime.toDate().toTimeString().substring(0, 5),
+        y: v.B
+    }))
+
+    const data3 = count.map((v) => ({
+        x: v.datetime.toDate().toTimeString().substring(0, 5),
+        y: v.C
+    }))
 
     let data = {
         labels: labels,
@@ -59,6 +81,7 @@ const Chart = ({ a, b, c }) => {
 
         </>
     )
+
 }
 
 export default Chart

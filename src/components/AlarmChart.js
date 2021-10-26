@@ -1,13 +1,21 @@
 import { Bar } from 'react-chartjs-2';
 
-const AlarmChart = ({ alarmData, color, label }) => {
+const AlarmChart = ({ alarmData, color, label, alarm, index }) => {
+    let labels;
+    if (alarm.length !== 0) {
+        console.log(alarm[0].datetime.toDate());
+        let now = new Date(alarm[0].datetime.toDate());
+        now = new Date(now.setMinutes(now.getMinutes() + 1));
+        labels = [...Array(60)].map((v, i) => new Date(now.setMinutes(now.getMinutes() - 1)).toTimeString().substring(0, 5)).reverse();
+    } else {
+        labels = [];
+    }
+    // const data1 = alarmData || [...Array(60)].map(() => Math.floor(Math.random() * 2));
 
-    const now = new Date()
-    const labels = [...Array(60)].map((v, i) => new Date(now.setMinutes(now.getMinutes() + 1)).toTimeString().substring(0, 5))
-    console.log(labels);
-
-    const data1 = alarmData || [...Array(60)].map(() => Math.floor(Math.random() * 2));
-
+    const data1 = alarm.map((v) => ({
+        x: v.datetime.toDate().toTimeString().substring(0, 5),
+        y: v.[index],
+    }))
 
     let data = {
         labels: labels,
@@ -36,7 +44,8 @@ const AlarmChart = ({ alarmData, color, label }) => {
                 stacked: true,
             },
         },
-
+        fill: true,
+        stepped: true,
     };
     return (
         <>
