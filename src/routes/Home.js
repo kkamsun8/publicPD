@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { dbService } from 'fbase';
 import "css/Home.css"
-import { Table, Tag } from 'antd';
+import { Table, Tag, Select } from 'antd';
 import 'antd/dist/antd.css';
+
+const { Option } = Select;
 
 const Home = ({ userObj }) => {
     const [data, setData] = useState();
@@ -84,17 +86,18 @@ const Home = ({ userObj }) => {
 
 
     const deviceChange = (e) => {
-        setDevice(parseInt(e.target.value))
+
+        setDevice(parseInt(e))
     }
 
     return (
         <>
             <Table columns={columns} dataSource={data} pagination={false} />
-            <select name="device" value={device} onChange={deviceChange}>
-                <option value="1">Device#1</option>
-                <option value="2">Device#2</option>
-                <option value="3">Device#3</option>
-            </select>
+            <Select name="device" value={device.toString()} onChange={deviceChange} className="select">
+                <Option value="1">Device#1</Option>
+                <Option value="2">Device#2</Option>
+                <Option value="3">Device#3</Option>
+            </Select>
             <Table columns={columnsSelect} dataSource={dataSelect} pagination={false} />
         </>
     )

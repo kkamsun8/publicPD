@@ -3,7 +3,6 @@ import { Bar } from 'react-chartjs-2';
 const AlarmChart = ({ alarmData, color, label, alarm, index }) => {
     let labels;
     if (alarm.length !== 0) {
-        console.log(alarm[0].datetime.toDate());
         let now = new Date(alarm[0].datetime.toDate());
         now = new Date(now.setMinutes(now.getMinutes() + 1));
         labels = [...Array(60)].map((v, i) => new Date(now.setMinutes(now.getMinutes() - 1)).toTimeString().substring(0, 5)).reverse();

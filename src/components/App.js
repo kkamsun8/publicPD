@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import AppRouter from 'components/Router';
 import { authService } from 'fbase';
-import 'css/App.css'
+import { Layout } from 'antd';
+import 'css/App.css';
+import 'antd/dist/antd.css';
 
+const { Header, Content, Footer } = Layout;
 
 function App() {
   const [init, setInit] = useState(false);

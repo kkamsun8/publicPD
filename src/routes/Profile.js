@@ -24,7 +24,7 @@ const Profile = () => {
     // }, []);
 
     const [device, setdevice] = useState(1);
-    const [count, setCount] = useState();
+    const [count, setCount] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
     const getData = async (firetime, device) => {
@@ -41,19 +41,45 @@ const Profile = () => {
         }
     }
 
+    const getRealTime = (device) => {
+        let newData = [];
+        dbService.collection("RealTime").where("device", "==", device).get().then((doc) => {
+            let realDate;
+            doc.forEach((document) => realDate = document.data().datetime)
+            console.log(realDate);
+            let fromDate = new Date(realDate.toDate());
+            fromDate.setMinutes(fromDate.getMinutes() - 59);
+            const fireFromDate = firebase.firestore.Timestamp.fromDate(fromDate);
+            dbService.collection("PD").where("device", "==", device).where("datetime", ">=", fireFromDate).orderBy("datetime", "desc").get().then((doc) => {
+                doc.forEach((document) => { newData = [...newData, document.data()] });
+                const firerealDate = firebase.firestore.Timestamp.fromDate(realDate.toDate());
+                console.log(newData);
+            });
+        });
+        return newData;
+    }
+
+
     useEffect(() => {
+        setIsLoading(false);
+        setCount([]);
+        const realDate = firebase.firestore.Timestamp.fromDate(new Date());
         const unsubscribe = dbService.collection("RealTime").where("device", "==", device).onSnapshot((snapshot) => {
             const realTime = snapshot.docs.map((document) => ({
-                id: document.id,
                 ...document.data(),
             }));
-            console.log(realTime)
-            let newDate = realTime[0].datetime.toDate();
-            newDate.setMinutes(newDate.getMinutes() - 59);
-
-            const firetime = firebase.firestore.Timestamp.fromDate(newDate);
-            getData(firetime, device);
-        });
+            setCount((prev) => {
+                const data = [realTime[0], ...prev];
+                let time = realTime[0].datetime.toDate();
+                console.log(time);
+                time.setMinutes(time.getMinutes() - 59);
+                console.log(time);
+                console.log(data);
+                const newData = data.filter((v) => v.datetime.toDate() >= time);
+                return newData;
+            })
+            setIsLoading(true);
+        })
         return () => {
             unsubscribe();
         }

@@ -4,6 +4,7 @@ import Chart from 'components/Chart';
 import AlarmChart from 'components/AlarmChart';
 import { dbService } from 'fbase';
 import firebase from 'firebase';
+import { Doughnut } from 'react-chartjs-2';
 
 
 const timeString = () => {
@@ -52,6 +53,31 @@ const TrendLog = () => {
         getData(firetime, firetimeTo, device);
 
     }, [device, datetime]);
+
+    let doughnutData = {
+        labels: ['Alarm', 'Normal', 'Empty'],
+        datasets: [
+            {
+                label: 'A상',
+                data: [3, 5, 6],
+                backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(75, 192, 192)',
+                    'rgb(201, 203, 207)'
+                ],
+            },
+        ],
+    };
+
+    const dougnutOption = {
+        responsive: false,
+        plugins: {
+            legend: {
+                position: 'right',
+            },
+        }
+    }
+
     return (
         <>
             <div className="form">
@@ -68,6 +94,14 @@ const TrendLog = () => {
                     <AlarmChart color='rgb(255, 99, 132)' label='A상' index='alarmA' alarm={count} />
                     <AlarmChart color='rgb(255, 205, 86)' label='B상' index='alarmB' alarm={count} />
                     <AlarmChart color='rgb(54, 162, 235)' label='C상' index='alarmC' alarm={count} />
+                    <div style={{ width: '200px', height: '100px', position: 'relative' }}>
+                        <div style={{ position: 'absolute', top: '41%', left: '18%' }}>A상</div>
+                        <Doughnut data={doughnutData} options={dougnutOption} width='200' height='100' />
+
+                    </div>
+                    <div style={{ width: '50vw', }}>
+                        <Doughnut data={doughnutData} options={dougnutOption} width='200' height='100' />
+                    </div>
                 </>
             ) : (<p>Loading....</p>)}
         </>
