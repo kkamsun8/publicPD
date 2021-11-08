@@ -77,7 +77,7 @@ const Home = ({ userObj }) => {
         )
     },
     {
-        title: '알람발생 시간',
+        title: '최근 알람발생 시간',
         dataIndex: 'datetime',
         key: 'datetime',
     },
